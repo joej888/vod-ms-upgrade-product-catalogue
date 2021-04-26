@@ -28,10 +28,22 @@ exports.handler = async function getManufacturerList(req, res, next) {
     res.json(output);
     return next(response.error);
   } else {
+    const jsonData = response.data.result.properties.brandName
+    function getManufacturerDetails(model) {
+      let modelDetails = {
+        name: model,
+      };
+      return modelDetails;
+    }
+    function getManufacuturersMapped(jsonData) {
+      return jsonData.map(getManufacturerDetails);
+    }
+    let manufacturersArr = getManufacuturersMapped(jsonData)
+
     const manufacturerList = {
       description: "brandName of devices",
       name: "devicebrandName",
-      subCategory: response.data.result.properties.brandName,
+      subCategory: manufacturersArr,
     };
 
     res.status(response.status);
@@ -39,8 +51,4 @@ exports.handler = async function getManufacturerList(req, res, next) {
 
     return next();
   }
-  /*if (!response.ok) {
-    getManufacturerListError.inc();
-    return next(response.error);
-  }*/
 };
